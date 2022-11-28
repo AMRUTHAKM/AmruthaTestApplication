@@ -7,7 +7,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.amrutha.amruthatestapplication.database.CatRoomModel
-import com.amrutha.amruthatestapplication.model.CatDataItem
 import com.bumptech.glide.Glide
 
 class MainViewAdapter() : RecyclerView.Adapter<MainViewAdapter.ViewHolder>() {

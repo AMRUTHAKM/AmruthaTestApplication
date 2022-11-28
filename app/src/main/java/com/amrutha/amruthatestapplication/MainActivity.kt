@@ -10,16 +10,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.amrutha.amruthatestapplication.api.ApiService
 import com.amrutha.amruthatestapplication.database.AppDatabase
-import com.amrutha.amruthatestapplication.database.CatRoomModel
 import com.amrutha.amruthatestapplication.factory.MainViewModelFactory
-import com.amrutha.amruthatestapplication.model.Items
 import com.amrutha.amruthatestapplication.repository.MainRepository
 import com.amrutha.amruthatestapplication.viewmodel.MainViewModel
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivity"
-    private val itemList = ArrayList<Items>()
     private lateinit var viewModel: MainViewModel
     private val apiService = ApiService.getInstance()
     private val mainViewAdapter = MainViewAdapter()
@@ -33,22 +30,19 @@ class MainActivity : AppCompatActivity() {
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        viewModel = ViewModelProvider(this, MainViewModelFactory(MainRepository(apiService)))
-            .get(MainViewModel::class.java)
+        viewModel = ViewModelProvider(
+            this,
+            MainViewModelFactory(MainRepository(apiService))
+        )[MainViewModel::class.java]
 
         recyclerView.adapter = mainViewAdapter
 
         viewModel.catList.observe(this, Observer {
-            Log.e(TAG, "size:$it")
-
-            for (i in 0..it.size-1){
-
+            for (i in 0..it.size - 1) {
                 lifecycleScope.launch {
                     appDatabase.addData(CatDataItemToCatRoomModelConverter().fromAPItoDB(it[i]))
                 }
             }
-
-            //mainViewAdapter.setCatList(it)
         })
 
         viewModel.errorMessage.observe(this, Observer {
@@ -56,14 +50,13 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.getAllCats()
         getRoomData()
-
     }
 
     private fun getRoomData() {
         lifecycleScope.launch {
             appDatabase.getData().collect { dataList ->
                 if (dataList.isNotEmpty()) {
-                    Log.e(TAG, "getRoomData: ${dataList[0].name}" )
+                    Log.e(TAG, "getRoomData: ${dataList[0].name}")
                     mainViewAdapter.setCatList(dataList)
                 }
             }

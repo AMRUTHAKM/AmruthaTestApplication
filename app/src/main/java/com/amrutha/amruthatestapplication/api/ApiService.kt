@@ -13,7 +13,7 @@ interface ApiService {
     companion object {
         private var apiService: ApiService? = null
         var BASE_URL = "https://api.thecatapi.com/"
-        fun getInstance() : ApiService {
+        fun getInstance(): ApiService {
             if (apiService == null) {
                 val retrofit = Retrofit.Builder()
                     .baseUrl(BASE_URL)
