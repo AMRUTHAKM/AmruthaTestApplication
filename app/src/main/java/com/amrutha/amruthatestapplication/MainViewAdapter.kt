@@ -6,14 +6,15 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.amrutha.amruthatestapplication.database.CatRoomModel
 import com.amrutha.amruthatestapplication.model.CatDataItem
 import com.bumptech.glide.Glide
 
 class MainViewAdapter() : RecyclerView.Adapter<MainViewAdapter.ViewHolder>() {
 
-    var adapterList = mutableListOf<CatDataItem>()
+    var adapterList = mutableListOf<CatRoomModel>()
 
-    fun setCatList(catList: List<CatDataItem>) {
+    fun setCatList(catList: List<CatRoomModel>) {
         this.adapterList = catList.toMutableList()
         notifyDataSetChanged()
     }
@@ -33,7 +34,7 @@ class MainViewAdapter() : RecyclerView.Adapter<MainViewAdapter.ViewHolder>() {
         val item = adapterList[position]
         holder.textName.text = item.name
         holder.textOrigin.text = item.origin
-        Glide.with(holder.itemView.context).load(item.image?.url).into(holder.imageCat)
+        Glide.with(holder.itemView.context).load(item.image).into(holder.imageCat)
     }
 
     override fun getItemCount(): Int {

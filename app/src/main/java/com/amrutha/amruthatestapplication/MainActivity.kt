@@ -5,13 +5,17 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.amrutha.amruthatestapplication.api.ApiService
+import com.amrutha.amruthatestapplication.database.AppDatabase
+import com.amrutha.amruthatestapplication.database.CatRoomModel
 import com.amrutha.amruthatestapplication.factory.MainViewModelFactory
 import com.amrutha.amruthatestapplication.model.Items
 import com.amrutha.amruthatestapplication.repository.MainRepository
 import com.amrutha.amruthatestapplication.viewmodel.MainViewModel
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivity"
@@ -19,6 +23,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: MainViewModel
     private val apiService = ApiService.getInstance()
     private val mainViewAdapter = MainViewAdapter()
+
+    private val appDatabase by lazy { AppDatabase.getDatabase(this).appDao() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,21 +41,32 @@ class MainActivity : AppCompatActivity() {
         viewModel.catList.observe(this, Observer {
             Log.e(TAG, "size:$it")
 
-            mainViewAdapter.setCatList(it)
+            for (i in 0..it.size-1){
+
+                lifecycleScope.launch {
+                    appDatabase.addData(CatDataItemToCatRoomModelConverter().fromAPItoDB(it[i]))
+                }
+            }
+
+            //mainViewAdapter.setCatList(it)
         })
 
         viewModel.errorMessage.observe(this, Observer {
         })
 
         viewModel.getAllCats()
+        getRoomData()
 
+    }
 
-        /*for (i in 0..10) {
-            itemList.add(Items("abc", "abc"))
+    private fun getRoomData() {
+        lifecycleScope.launch {
+            appDatabase.getData().collect { dataList ->
+                if (dataList.isNotEmpty()) {
+                    Log.e(TAG, "getRoomData: ${dataList[0].name}" )
+                    mainViewAdapter.setCatList(dataList)
+                }
+            }
         }
-
-        val mainViewAdapter = MainViewAdapter(itemList)*/
-
-
     }
 }
