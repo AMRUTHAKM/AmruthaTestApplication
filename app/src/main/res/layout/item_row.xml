@@ -17,16 +17,23 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="@dimen/recycler_margin">
+
+            <ImageView
+                android:id="@+id/image_cat"
+                android:layout_width="100dp"
+                android:layout_height="100dp"/>
             <TextView
                 android:id="@+id/name"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/image_cat" />
 
             <TextView
                 android:id="@+id/origin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/name"/>
+                android:layout_below="@+id/name"
+                android:layout_toEndOf="@+id/image_cat"/>
         </RelativeLayout>
 
 
